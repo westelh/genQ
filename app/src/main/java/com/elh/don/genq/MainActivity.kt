@@ -8,33 +8,36 @@ import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
-import android.view.Menu
-import android.view.MenuItem
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.view.*
+import android.widget.TextView
+import org.jetbrains.anko.find
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+    val list = listOf(1, 2, 3)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val toolbar = findViewById(R.id.toolbar) as Toolbar
-        setSupportActionBar(toolbar)
+        setSupportActionBar(find(R.id.toolbar))
 
-        with(findViewById(R.id.fab) as FloatingActionButton) {
-            setOnClickListener {
-                startActivity(Intent(context, QuizTable::class.java))
-            }
+        find<FloatingActionButton>(R.id.fab).setOnClickListener {
+            startActivity(Intent(applicationContext, QuizTable::class.java))
         }
 
-        with(findViewById(R.id.drawer_layout) as DrawerLayout) {
-            addDrawerListener(ActionBarDrawerToggle(this@MainActivity, this, toolbar,
+        find<DrawerLayout>(R.id.drawer_layout).apply {
+            addDrawerListener(ActionBarDrawerToggle(this@MainActivity, this, find(R.id.toolbar),
                     R.string.navigation_drawer_open, R.string.navigation_drawer_close).apply {
                 syncState()
             })
         }
 
-        with(findViewById(R.id.nav_view) as NavigationView) {
-            setNavigationItemSelectedListener(this@MainActivity)
+        find<NavigationView>(R.id.nav_view).setNavigationItemSelectedListener(this@MainActivity)
+
+        find<RecyclerView>(R.id.recycler_view).apply {
+            layoutManager = LinearLayoutManager(this@MainActivity)
+            adapter = CellAdapter(list)
         }
     }
 
@@ -89,4 +92,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer.closeDrawer(GravityCompat.START)
         return true
     }
+
+    inner class CellAdapter <out T> (val data: List<T>) : RecyclerView.Adapter<CellAdapter<T>.ViewHolder>() {
+        override fun getItemCount(): Int = data.size
+        override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder
+                = ViewHolder(LayoutInflater.from(this@MainActivity).inflate(R.layout.recycler_cell, parent, false))
+        override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
+            holder?.text?.text = data[position].toString()
+        }
+        inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+            val text = itemView.findViewById(R.id.recycler_cell_text) as TextView
+        }
+    }
 }
+
