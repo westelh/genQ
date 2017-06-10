@@ -14,7 +14,6 @@ import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.*
 import android.widget.TextView
-import org.jetbrains.anko.db.select
 import org.jetbrains.anko.find
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -97,17 +96,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     inner class CellAdapter <out T> (val data: List<T>) : RecyclerView.Adapter<CellAdapter<T>.ViewHolder>() {
-        val database = MainQDatabaseHelper.getInstance(this@MainActivity).readableDatabase
-        override fun getItemCount(): Int = database.select(getString(R.string.questions_group_table_name), "title").exec { columnCount }
+        val database = MainQDatabaseFacade.getInstance(this@MainActivity)
+        override fun getItemCount(): Int = database.queryTitles().exec { columnCount }
         override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder
                 = ViewHolder(LayoutInflater.from(this@MainActivity).inflate(R.layout.recycler_cell, parent, false))
         override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
-            database.select(getString(R.string.questions_group_table_name), "title").exec {
-                try {
-                    moveToNext()
-                    holder?.text?.text = getString(0)
-                } catch (e: CursorIndexOutOfBoundsException) {
-                    Log.e("MainQDatabase", "Required entry does not exist! (index:${this.position})")
+            database.queryTitles().exec {
+                moveToNext()
+                holder?.apply {
+                    try {
+                        text.text = getString(0)
+                    } catch (e: CursorIndexOutOfBoundsException) {
+                        Log.e("MainQDatabase", "Required entry does not exist! (index:${this@exec.position})")
+                        text.text = getString(R.string.alt_msg_failing_load_data)
+                    }
                 }
             }
         }
