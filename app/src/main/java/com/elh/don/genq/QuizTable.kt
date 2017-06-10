@@ -5,15 +5,15 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
-import org.jetbrains.anko.verticalLayout
+import org.jetbrains.anko.find
 
 class QuizTable : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        verticalLayout {
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        }
+        setContentView(R.layout.activity_quiz_table)
+        setSupportActionBar(find(R.id.toolbar))
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean = super.onOptionsItemSelected(item).apply {

@@ -5,12 +5,14 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
+import org.jetbrains.anko.find
 
 class RegisterActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
+        setSupportActionBar(find(R.id.toolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
