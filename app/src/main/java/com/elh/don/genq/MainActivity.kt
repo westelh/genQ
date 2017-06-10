@@ -114,6 +114,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val text = itemView.findViewById(R.id.recycler_cell_text) as TextView
+            init {
+                text.setOnClickListener { startActivity(Intent(this@MainActivity, RegisterActivity::class.java)) }
+            }
         }
     }
 }
