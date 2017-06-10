@@ -17,7 +17,6 @@ import android.widget.TextView
 import org.jetbrains.anko.find
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-    val list = listOf(1, 2, 3)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +38,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         find<RecyclerView>(R.id.recycler_view).apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
-            adapter = CellAdapter(list)
+            adapter = CellAdapter()
         }
     }
 
@@ -95,7 +94,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    inner class CellAdapter <out T> (val data: List<T>) : RecyclerView.Adapter<CellAdapter<T>.ViewHolder>() {
+    inner class CellAdapter : RecyclerView.Adapter<CellAdapter.ViewHolder>() {
         val database = MainQDatabaseFacade.getInstance(this@MainActivity)
         override fun getItemCount(): Int = database.queryTitles().exec { columnCount }
         override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder
