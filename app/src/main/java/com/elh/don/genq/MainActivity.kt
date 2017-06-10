@@ -1,6 +1,7 @@
 package com.elh.don.genq
 
 import android.content.Intent
+import android.database.CursorIndexOutOfBoundsException
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.NavigationView
@@ -10,8 +11,10 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.*
 import android.widget.TextView
+import org.jetbrains.anko.db.select
 import org.jetbrains.anko.find
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -94,11 +97,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     inner class CellAdapter <out T> (val data: List<T>) : RecyclerView.Adapter<CellAdapter<T>.ViewHolder>() {
-        override fun getItemCount(): Int = data.size
+        val database = MainQDatabaseHelper.getInstance(this@MainActivity).readableDatabase
+        override fun getItemCount(): Int = database.select(getString(R.string.questions_group_table_name), "title").exec { columnCount }
         override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder
                 = ViewHolder(LayoutInflater.from(this@MainActivity).inflate(R.layout.recycler_cell, parent, false))
         override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
-            holder?.text?.text = data[position].toString()
+            database.select(getString(R.string.questions_group_table_name), "title").exec {
+                try {
+                    moveToNext()
+                    holder?.text?.text = getString(0)
+                } catch (e: CursorIndexOutOfBoundsException) {
+                    Log.e("MainQDatabase", "Required entry does not exist! (index:${this.position})")
+                }
+            }
         }
         inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val text = itemView.findViewById(R.id.recycler_cell_text) as TextView
