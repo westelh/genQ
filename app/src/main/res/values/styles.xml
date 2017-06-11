@@ -13,6 +13,16 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="AppTheme.WhiteTextInput">
+        
+    </style>
+    
+    <style name="AppTheme.Design.TextInputLayout" parent="Widget.Design.TextInputLayout">
+        <item name="android:textColorHint">@android:color/secondary_text_dark</item>
+        <item name="colorControlNormal">@android:color/primary_text_dark</item>
+        <item name="colorControlActivated">@android:color/secondary_text_dark</item>
+    </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />

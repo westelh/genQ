@@ -10,4 +10,7 @@
 
     <string name="action_settings">Settings</string>
     <string name="alt_msg_failing_load_data">Failed to read from database</string>
+    <string name="createNewQuizTable">新しい問題集を作成</string>
+    <string name="complete">完了</string>
+    <string name="inputTitle">タイトルを入力</string>
 </resources>
